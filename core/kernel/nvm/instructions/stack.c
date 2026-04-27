@@ -33,8 +33,7 @@ bool handle_push(nvm_process_t* proc) {
         }
     } else {
         LOG_WARN("process %d: Not enough bytes\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -45,8 +44,7 @@ bool handle_pop(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in POP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -55,14 +53,12 @@ bool handle_pop(nvm_process_t* proc) {
 bool handle_dup(nvm_process_t* proc) {
     if(proc->sp == 0) {
         LOG_WARN("process %d: Stack underflow in DUP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     if(proc->sp >= STACK_SIZE) {
         LOG_WARN("process %d: Stack overflow in DUP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     
@@ -79,8 +75,7 @@ bool handle_swap(nvm_process_t* proc) {
         proc->stack[proc->sp - 1] = second;
     } else {
         LOG_WARN("process %d: Stack underflow in SWAP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -103,8 +98,7 @@ bool handle_enter(nvm_process_t* proc) {
         }
     } else {
         LOG_WARN("process %d: Not enough bytes for ENTER\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -113,14 +107,12 @@ bool handle_enter(nvm_process_t* proc) {
 bool handle_leave(nvm_process_t* proc) {
     if (proc->fp < 0 || proc->fp >= STACK_SIZE) {
         LOG_WARN("process %d: Invalid frame pointer in LEAVE\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     if (proc->sp < proc->fp + 1) {
         LOG_WARN("process %d: Corrupted stack/frame in LEAVE\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     

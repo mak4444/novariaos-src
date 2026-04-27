@@ -13,8 +13,7 @@ bool handle_add(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in ADD\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -30,8 +29,7 @@ bool handle_sub(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in SUB\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -47,8 +45,7 @@ bool handle_mul(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in MUL\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -72,8 +69,7 @@ bool handle_div(nvm_process_t* proc) {
         }
     } else {
         LOG_WARN("process %d: Stack underflow in DIV\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -97,8 +93,7 @@ bool handle_mod(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in MOD\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -122,8 +117,7 @@ bool handle_cmp(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in CMP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -139,8 +133,7 @@ bool handle_eq(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in EQ\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -156,8 +149,7 @@ bool handle_neq(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in NEQ\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -173,8 +165,7 @@ bool handle_gt(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in GT\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -190,8 +181,7 @@ bool handle_lt(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in LT\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;

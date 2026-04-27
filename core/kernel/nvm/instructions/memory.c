@@ -74,8 +74,7 @@ bool handle_store_rel(nvm_process_t* proc) {
 bool handle_load_abs(nvm_process_t* proc) {
     if (!caps_has_capability(proc, CAP_DRV_ACCESS)) {
         LOG_WARN("process %d: Required caps not received\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
 
@@ -94,8 +93,7 @@ bool handle_load_abs(nvm_process_t* proc) {
 bool handle_store_abs(nvm_process_t* proc) {
     if (!caps_has_capability(proc, CAP_DRV_ACCESS)) {
         LOG_WARN("process %d: Required caps not received\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
 
@@ -119,8 +117,7 @@ bool handle_store_abs(nvm_process_t* proc) {
 bool handle_load_heap(nvm_process_t* proc) {
     if (proc->sp < 1) {
         LOG_WARN("process %d: Stack underflow in LOAD_HEAP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     int32_t offset = proc->stack[--proc->sp];
@@ -128,8 +125,7 @@ bool handle_load_heap(nvm_process_t* proc) {
     if (offset < 0 || offset + 3 >= (int32_t)proc->heap_size) {
         LOG_WARN("process %d: LOAD_HEAP out of bounds (offset=%d, heap_size=%u)\n",
                  proc->pid, offset, proc->heap_size);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
 
@@ -137,8 +133,7 @@ bool handle_load_heap(nvm_process_t* proc) {
 
     if (proc->sp >= STACK_SIZE) {
         LOG_WARN("process %d: Stack overflow in LOAD_HEAP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     proc->stack[proc->sp++] = value;
@@ -149,8 +144,7 @@ bool handle_load_heap(nvm_process_t* proc) {
 bool handle_store_heap(nvm_process_t* proc) {
     if (proc->sp < 2) {
         LOG_WARN("process %d: Stack underflow in STORE_HEAP\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
 
@@ -160,8 +154,7 @@ bool handle_store_heap(nvm_process_t* proc) {
     if (offset < 0 || offset + 3 >= (int32_t)proc->heap_size) {
         LOG_WARN("process %d: STORE_HEAP out of bounds (offset=%d, heap_size=%u)\n",
                  proc->pid, offset, proc->heap_size);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
 

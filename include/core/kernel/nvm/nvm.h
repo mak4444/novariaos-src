@@ -39,6 +39,7 @@ extern nvm_process_t processes[MAX_PROCESSES];
 extern uint8_t current_process;
 
 int nvm_create_process(uint8_t* bytecode, uint32_t size, uint16_t initial_caps[], uint8_t caps_count);
+bool nvm_kill_process(uint8_t pid);
 bool nvm_execute_instruction(nvm_process_t* proc);
 void nvm_scheduler_tick();
 nvm_process_t* nvm_get_process(uint8_t pid);

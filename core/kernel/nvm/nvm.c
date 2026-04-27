@@ -11,7 +11,7 @@
 #include <core/fs/procfs.h>
 #include <stdint.h>
 
-#define HEAP_SIZE (128 * 1024)  // 128 KiB
+#define HEAP_SIZE (4 * 1024)  // 4 KiB
 
 nvm_process_t processes[MAX_PROCESSES];
 uint8_t current_process = 0;
@@ -70,6 +70,52 @@ int nvm_create_process(uint8_t* bytecode, uint32_t size, uint16_t initial_caps[]
 
     LOG_WARN("No free process slots\n");
     return -1;
+}
+
+
+bool nvm_kill_process(uint8_t pid) {
+    if(pid >= MAX_PROCESSES) {
+        LOG_WARN("nvm_kill_process: Invalid PID %d\n", pid);
+        return false;
+    }
+    
+    nvm_process_t* proc = &processes[pid];
+    
+    if(!proc->active) {
+        LOG_WARN("nvm_kill_process: Process %d is not active\n", pid);
+        return false;
+    }
+    
+    LOG_INFO("Killing process %d\n", pid);
+    
+    if(proc->heap) {
+        kfree(proc->heap);
+        proc->heap = NULL;
+        proc->heap_size = 0;
+    }
+    
+    caps_clear_all(proc);
+
+    for(int i = 0; i < MAX_LOCALS; i++) {
+        proc->locals[i] = 0;
+    }
+
+    for(int i = 0; i < STACK_SIZE; i++) {
+        proc->stack[i] = 0;
+    }
+    
+    procfs_unregister(pid);
+    
+    proc->exit_code = -1;
+    proc->active = false;
+    proc->blocked = false;
+    proc->sp = 0;
+    proc->ip = 0;
+    proc->fp = -1;
+    
+    kfree(proc->bytecode);
+    
+    return true;
 }
 
 // Execute one instruction

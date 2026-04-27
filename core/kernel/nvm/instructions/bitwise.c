@@ -13,8 +13,7 @@ bool handle_and(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in AND\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -30,8 +29,7 @@ bool handle_or(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in OR\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -47,8 +45,7 @@ bool handle_xor(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in XOR\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -62,8 +59,7 @@ bool handle_not(nvm_process_t* proc) {
         proc->stack[proc->sp - 1] = result;
     } else {
         LOG_WARN("process %d: Stack underflow in NOT\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -86,8 +82,7 @@ bool handle_shl(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in SHL\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -110,8 +105,7 @@ bool handle_shr(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in SHR\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -134,8 +128,7 @@ bool handle_sar(nvm_process_t* proc) {
         proc->sp--;
     } else {
         LOG_WARN("process %d: Stack underflow in SAR\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;

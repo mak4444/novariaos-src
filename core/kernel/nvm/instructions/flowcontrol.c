@@ -51,8 +51,7 @@ bool handle_jz(nvm_process_t* proc) {
         }
     } else {
         LOG_WARN("process %d: Stack underflow in JZ32\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -86,8 +85,7 @@ bool handle_jnz(nvm_process_t* proc) {
         }
     } else {
         LOG_WARN("process %d: Stack underflow in JNZ32\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -120,8 +118,7 @@ bool handle_call(nvm_process_t* proc) {
         }
     } else {
         LOG_WARN("process %d: Not enough bytes for address CALL32\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -141,8 +138,7 @@ bool handle_ret(nvm_process_t* proc) {
         }
     } else {
         LOG_WARN("process %d: stack underflow in RET\n", proc->pid);
-        proc->exit_code = -1;
-        proc->active = false;
+nvm_kill_process(proc->pid);
         return false;
     }
     return true;
