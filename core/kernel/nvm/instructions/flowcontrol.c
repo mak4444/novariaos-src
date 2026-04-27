@@ -15,8 +15,7 @@ bool handle_jmp(nvm_process_t* proc) {
             proc->ip = addr;
         } else {
             LOG_WARN("process %d: Invalid address for JMP32\n", proc->pid);
-            proc->exit_code = -1;
-            proc->active = false;
+            nvm_kill_process(proc->pid);
             return false;
         }
     }
@@ -45,13 +44,12 @@ bool handle_jz(nvm_process_t* proc) {
             }
         } else {
             LOG_WARN("process %d: Not enough bytes for address JZ32\n", proc->pid);
-            proc->exit_code = -1;
-            proc->active = false;
+            nvm_kill_process(proc->pid);
             return false;
         }
     } else {
         LOG_WARN("process %d: Stack underflow in JZ32\n", proc->pid);
-nvm_kill_process(proc->pid);
+        nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -79,13 +77,12 @@ bool handle_jnz(nvm_process_t* proc) {
             }
         } else {
             LOG_WARN("process %d: Not enough bytes for address JNZ32\n", proc->pid);
-            proc->exit_code = -1;
-            proc->active = false;
+            nvm_kill_process(proc->pid);
             return false;
         }
     } else {
         LOG_WARN("process %d: Stack underflow in JNZ32\n", proc->pid);
-nvm_kill_process(proc->pid);
+        nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -112,13 +109,12 @@ bool handle_call(nvm_process_t* proc) {
             }
         } else {
             LOG_WARN("process %d: Stack overflow in CALL32\n", proc->pid);
-            proc->exit_code = -1;
-            proc->active = false;
+            nvm_kill_process(proc->pid);
             return false;
         }
     } else {
         LOG_WARN("process %d: Not enough bytes for address CALL32\n", proc->pid);
-nvm_kill_process(proc->pid);
+        nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -132,13 +128,12 @@ bool handle_ret(nvm_process_t* proc) {
             proc->ip = return_addr;
         } else {
             LOG_WARN("process %d: invalid return address\n", proc->pid);
-            proc->exit_code = -1;
-            proc->active = false;
+            nvm_kill_process(proc->pid);
             return false;
         }
     } else {
         LOG_WARN("process %d: stack underflow in RET\n", proc->pid);
-nvm_kill_process(proc->pid);
+        nvm_kill_process(proc->pid);
         return false;
     }
     return true;
@@ -149,8 +144,7 @@ bool handle_load_arg(nvm_process_t* proc) {
         uint8_t off = proc->bytecode[proc->ip++];
         if (proc->fp <= 0) {
             LOG_WARN("process %d: LOAD_ARG without valid frame\n", proc->pid);
-            proc->exit_code = -1;
-            proc->active = false;
+            nvm_kill_process(proc->pid);
             return false;
         }
         int32_t idx = (proc->fp - 2) - (int32_t)off;
@@ -166,8 +160,7 @@ bool handle_store_arg(nvm_process_t* proc) {
         uint8_t off = proc->bytecode[proc->ip++];
         if (proc->fp <= 0) {
             LOG_WARN("process %d: STORE_ARG without valid frame\n", proc->pid);
-            proc->exit_code = -1;
-            proc->active = false;
+            nvm_kill_process(proc->pid);
             return false;
         }
         int32_t idx = (proc->fp - 2) - (int32_t)off;
