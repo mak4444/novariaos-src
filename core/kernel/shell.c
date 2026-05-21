@@ -259,82 +259,6 @@ static void cmd_ls(const char* args) {
     kprint("\n", 7);
 }
 
-static void cmd_echo(int argc, char* argv[]) {
-    const char* redirect_file = NULL;
-    int append = 0;
-    int text_end = argc;
-
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], ">") == 0 || strcmp(argv[i], ">>") == 0) {
-            append = (argv[i][1] == '>') ? 1 : 0;
-            if (i + 1 < argc) {
-                redirect_file = argv[i + 1];
-            }
-            text_end = i;
-            break;
-        }
-    }
-
-    char text[MAX_COMMAND_LENGTH];
-    int tlen = 0;
-    for (int i = 1; i < text_end; i++) {
-        if (i > 1) text[tlen++] = ' ';
-        const char* w = argv[i];
-        while (*w && tlen < MAX_COMMAND_LENGTH - 2) text[tlen++] = *w++;
-    }
-    text[tlen++] = '\n';
-    text[tlen] = '\0';
-
-    if (!redirect_file) {
-        kprint(text, 15);
-        return;
-    }
-
-    char full_path[MAX_PATH_LENGTH];
-    if (redirect_file[0] == '/') {
-        strcpy_safe(full_path, redirect_file, MAX_PATH_LENGTH);
-    } else {
-        strcpy_safe(full_path, current_working_directory, MAX_PATH_LENGTH);
-        if (full_path[strlen(full_path)-1] != '/')
-            strcat(full_path, "/");
-        strcat(full_path, redirect_file);
-    }
-
-    const char* rel = NULL;
-    vfs_mount_t* mnt = vfs_find_mount(full_path, &rel);
-    if (mnt && mnt->fs && mnt->fs->ops && mnt->fs->ops->open &&
-        mnt->fs->ops->write && mnt->fs->ops->close) {
-        const vfs_fs_ops_t* ops = mnt->fs->ops;
-
-        int flags = VFS_WRITE | VFS_CREAT | (append ? VFS_APPEND : VFS_TRUNC);
-        vfs_file_handle_t h;
-        memset(&h, 0, sizeof(h));
-        h.flags = flags;
-
-        int rc = ops->open(mnt, rel, flags, &h);
-        if (rc != 0) {
-            kprint("echo: open failed (", 7);
-            char eb[12]; itoa(-rc, eb, 10);
-            kprint(eb, 12);
-            kprint(") fs=", 7);
-            kprint(mnt->fs->name, 15);
-            kprint(" path=", 7);
-            kprint(rel, 15);
-            kprint("\n", 7);
-            return;
-        }
-        ops->write(mnt, &h, text, tlen);
-        ops->close(mnt, &h);
-    } else {
-        if (!mnt)
-            kprint("echo: no mount found for path\n", 7);
-        else if (!mnt->fs->ops->open)
-            kprint("echo: filesystem has no write support\n", 7);
-        else
-            kprint("echo: no writable filesystem at path\n", 7);
-    }
-}
-
 static int parse_command(const char* command, char* argv[], int max_args) {
     int argc = 0;
     static char cmd_buf[MAX_COMMAND_LENGTH];
@@ -406,8 +330,6 @@ static void execute_command(const char* command) {
         }
     } else if (strcmp(argv[0], "cd") == 0) {
         shell_set_cwd(argv[1]);
-    } else if (strcmp(argv[0], "echo") == 0) {
-        cmd_echo(argc, argv);
     } else if (strcmp(argv[0], "mount") == 0) {
         cmd_mount(argc, argv);
     } else if (strcmp(argv[0], "umount") == 0) {
