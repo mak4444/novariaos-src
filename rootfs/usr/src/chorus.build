@@ -4,7 +4,11 @@ variables:
 
 targets:
   all:
-    deps: [4everloop, Nutils/echo]
+    deps: [prepare, 4everloop, Nutils/echo]
+
+  prepare:
+    cmds:
+      - "mkdir -p ../../bin"
 
   4everloop:
     cmds:
