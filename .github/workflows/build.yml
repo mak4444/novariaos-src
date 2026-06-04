@@ -1,0 +1,20 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc nasm
+
+      - name: Install chorus
+        run: curl -fsSL https://raw.githubusercontent.com/z3nnix/chorus/refs/heads/main/install.sh | sh
+
+      - name: Build kernel
+        run: chorus kernel.bin
