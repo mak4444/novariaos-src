@@ -32,7 +32,7 @@ targets:
       deps: [prepare,
             core/arch/boot, core/arch/idt, core/arch/apic, core/arch/spinlock, core/arch/cpuid, core/arch/entropy, core/arch/smp, core/arch/work_queue, core/arch/panic, core/arch/rtc,
 
-            core/kernel/kernel, core/kernel/kstd, core/kernel/tty, core/kernel/shell,
+            core/kernel/kernel, core/kernel/kstd, core/kernel/tty, core/kernel/forth, core/kernel/shell,
 
             core/kernel/mem/buddy,  core/kernel/mem/allocator, core/kernel/mem/slab, core/kernel/mem/cpu_pool,
 
@@ -242,6 +242,11 @@ targets:
       - "${CC} ${CFLAGS} ${@}.c -o ${OBJ_DIR}/${@}.o"
 
   core/drivers/ahci:
+    deps: []
+    cmds:
+      - "${CC} ${CFLAGS} ${@}.c -o ${OBJ_DIR}/${@}.o"
+
+  core/kernel/forth:
     deps: []
     cmds:
       - "${CC} ${CFLAGS} ${@}.c -o ${OBJ_DIR}/${@}.o"
