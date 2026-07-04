@@ -98,6 +98,58 @@ char* itoa(int num, char* str, int base) {
     return str;
 }
 
+unsigned long strtoul(const char* str, char** endptr, int base) {
+    unsigned long result = 0;
+    int i = 0;
+
+    // Пропускаем начальные пробелы
+    while (str[i] == ' ') {
+        i++;
+    }
+
+    // Преобразуем основание base в случае необходимости
+    if (base == 0) {
+        if (str[i] == '0') {
+            if (str[i + 1] == 'x' || str[i + 1] == 'X') {
+                base = 16;
+                i += 2;
+            } else {
+                base = 8;
+                i++;
+            }
+        } else {
+            base = 10;
+        }
+    }
+
+    // Обрабатываем число
+    while (str[i] != '\0') {
+        int digit;
+        if (str[i] >= '0' && str[i] <= '9') {
+            digit = str[i] - '0';
+        } else if (str[i] >= 'a' && str[i] <= 'z') {
+            digit = str[i] - 'a' + 10;
+        } else if (str[i] >= 'A' && str[i] <= 'Z') {
+            digit = str[i] - 'A' + 10;
+        } else {
+            break;
+        }
+        if (digit < base) {
+            result = result * base + digit;
+            i++;
+        } else {
+            break;
+        }
+    }
+
+    // Устанавливаем значение endptr
+    if (endptr != NULL) {
+        *endptr = (char*)(str + i);
+    }
+
+    return result;
+}
+
 size_t strlen(const char* str) {
     size_t len = 0;
     while (str[len] != '\0') {

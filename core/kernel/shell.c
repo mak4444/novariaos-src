@@ -19,6 +19,8 @@
 #define MAX_COMMAND_LENGTH 256
 #define MAX_PATH_LENGTH 256
 
+void cmd_forth(int argc, char* argv[]);
+
 static char current_working_directory[MAX_PATH_LENGTH] = "/";
 
 static void cmd_help(void) {
@@ -31,6 +33,7 @@ static void cmd_help(void) {
     kprint("  echo [text] [> file] - Print text or write to file\n", 7);
     kprint("  mount <fs> <dev> <mntpoint> - Mount filesystem\n", 7);
     kprint("  umount <mntpoint>  - Unmount filesystem\n", 7);
+    kprint("  4th                - Forth\n", 7);
     kprint("\n", 7);
 }
 
@@ -334,6 +337,9 @@ static void execute_command(const char* command) {
         cmd_mount(argc, argv);
     } else if (strcmp(argv[0], "umount") == 0) {
         cmd_umount(argc, argv);
+    } else if (strcmp(argv[0], "4th") == 0) {
+//        cmd_4th(argc, argv);
+	  cmd_forth(argc, argv);
     } else {
         char bin_path[64];
         int len = strlen(argv[0]);
